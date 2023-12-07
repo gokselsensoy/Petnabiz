@@ -8,6 +8,6 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Abstract;
 
-public interface IVetDal : IEntityRepository<Vet>
+public interface IPetOwnerDal : IEntityRepository<PetOwner>
 {
 }

@@ -9,6 +9,6 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Concrete;
 
-public class EfManagerDal : EfEntityRepositoryBase<Manager, PetnabizDatabaseContext>, IManagerDal
+public class EfVeterinaryClinicDal : EfEntityRepositoryBase<VeterinaryClinic, PetnabizDatabaseContext>, IVeterinaryClinicDal
 {
 }

@@ -1,6 +1,7 @@
 ﻿using Autofac.Core;
 using Core.Entities.Concrete;
 using Entities.Concrete;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Concrete;
 
-public class PetnabizDatabaseContext : DbContext
+public class PetnabizDatabaseContext : IdentityDbContext<AppUser, AppRole, int>
 {
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -28,30 +29,45 @@ public class PetnabizDatabaseContext : DbContext
 
 
         modelBuilder.Entity<Vet>()
-            .HasOne(v => v.Manager)
-            .WithOne(v => v.Vet)
-            .HasForeignKey<Manager>(m => m.VetId);
+            .HasOne(v => v.VeterinaryClinic)
+            .WithMany(v => v.Vets)
+            .HasForeignKey(v => v.ClinicId);
 
-        modelBuilder.Entity<User>()
-            .HasOne(u => u.Vet)
-            .WithMany(u => u.Users)
-            .HasForeignKey(u => u.VetId);
+        modelBuilder.Entity<PetOwner>()
+            .HasOne(p => p.VeterinaryClinic)
+            .WithMany(p => p.PetOwners)
+            .HasForeignKey(p => p.ClinicId);
 
-        modelBuilder.Entity<Patient>()
+        modelBuilder.Entity<Pet>()
+            .HasOne(p => p.PetOwner)
+            .WithMany(p => p.Pets)
+            .HasForeignKey(p => p.OwnerId);
+
+        modelBuilder.Entity<Examination>()
+            .HasOne(p => p.Pet)
+            .WithMany(p => p.Examinations)
+            .HasForeignKey(p => p.PetId);
+
+        modelBuilder.Entity<Examination>()
             .HasOne(p => p.Vet)
-            .WithMany(p => p.Patients)
+            .WithMany(p => p.Examinations)
             .HasForeignKey(p => p.VetId);
 
-        modelBuilder.Entity<Patient>()
-            .HasOne(p => p.User)
-            .WithMany(p => p.Patients)
-            .HasForeignKey(p => p.UserId);
+        modelBuilder.Entity<Examination>()
+            .HasOne(p => p.PetOwner)
+            .WithMany(p => p.Examinations)
+            .HasForeignKey(p => p.PetOwnerId);
+
+        base.OnModelCreating(modelBuilder);
     }
 
+    public DbSet<VeterinaryClinic> VeterinaryClinics { get; set; }
     public DbSet<Vet> Vets { get; set; }
-    public DbSet<Patient> Patients { get; set; }
-    public DbSet<Manager> Managers { get; set; }
-    public DbSet<User> Users { get; set; }
-    public DbSet<OperationClaim> OperationClaims { get; set; }
-    public DbSet<UserOperationClaim> UserOperationClaims { get; set; }
+    public DbSet<PetOwner> PetOwners { get; set; }
+    public DbSet<Pet> Pets { get; set; }
+    public DbSet<Examination> Examinations { get; set; }
+
+    //public DbSet<User> Users { get; set; }
+    //public DbSet<OperationClaim> OperationClaims { get; set; }
+    //public DbSet<UserOperationClaim> UserOperationClaims { get; set; }
 }

@@ -6,8 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccess.Abstract;
-
-public interface IManagerDal : IEntityRepository<Manager>
+namespace DataAccess.Abstract
 {
+    public interface IExaminationDal : IEntityRepository<Examination>
+    {
+    }
 }

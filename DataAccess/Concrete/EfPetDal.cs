@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Concrete;
 
-public class EfPatientDal:EfEntityRepositoryBase<Patient, PetnabizDatabaseContext>, IPatientDal
+public class EfPetDal : EfEntityRepositoryBase<Pet, PetnabizDatabaseContext>, IPetDal
 {
-
 }

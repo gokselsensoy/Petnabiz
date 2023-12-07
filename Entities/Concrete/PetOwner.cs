@@ -7,16 +7,17 @@ using System.Threading.Tasks;
 
 namespace Entities.Concrete;
 
-public class Manager : IEntity
+public class PetOwner : IEntity
 {
-    public int ManagerId { get; set; }
+    public int Id { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
-    public string Gender { get; set; }
-    public DateTime DateOfBirth { get; set; }
 
-    public int VetId { get; set; }
-    public Vet Vet { get; set; } = null!;
+    public int ClinicId { get; set; }
+    public VeterinaryClinic? VeterinaryClinic { get; set; } = null!;
+
+    public ICollection<Pet> Pets { get; set; } = new List<Pet>();
+    public ICollection<Examination> Examinations { get; set; } = new List<Examination>();
 }

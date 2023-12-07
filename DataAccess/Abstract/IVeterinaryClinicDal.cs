@@ -6,9 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccess.Abstract
+namespace DataAccess.Abstract;
+
+public interface IVeterinaryClinicDal : IEntityRepository<VeterinaryClinic>
 {
-    public interface IPatientDal : IEntityRepository<Patient>
-    {
-    }
 }

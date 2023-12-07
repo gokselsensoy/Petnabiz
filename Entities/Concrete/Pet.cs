@@ -7,17 +7,18 @@ using System.Threading.Tasks;
 
 namespace Entities.Concrete;
 
-public class Vet : IEntity
+public class Pet : IEntity
 {
     public int Id { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
+    public string Name { get; set; }
+    public string Species { get; set; }
+    public string Breed { get; set; }
     public string Gender { get; set; }
 
-    //vet oda no
+    //passport no chip no
 
-    public int ClinicId { get; set; }
-    public VeterinaryClinic? VeterinaryClinic { get; set; } = null!;
+    public int OwnerId { get; set; }
+    public PetOwner? PetOwner { get; set; } = null!;
 
     public ICollection<Examination> Examinations { get; set; } = new List<Examination>();
 }
