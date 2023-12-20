@@ -33,15 +33,15 @@ public class PetnabizDatabaseContext : IdentityDbContext<AppUser, AppRole, int>
             .WithMany(v => v.Vets)
             .HasForeignKey(v => v.ClinicId);
 
-        modelBuilder.Entity<PetOwner>()
-            .HasOne(p => p.VeterinaryClinic)
-            .WithMany(p => p.PetOwners)
-            .HasForeignKey(p => p.ClinicId);
+        //modelBuilder.Entity<PetOwner>()
+        //    .HasOne(p => p.VeterinaryClinic)
+        //    .WithMany(p => p.PetOwners)
+        //    .HasForeignKey(p => p.ClinicId);
 
-        modelBuilder.Entity<Pet>()
-            .HasOne(p => p.PetOwner)
-            .WithMany(p => p.Pets)
-            .HasForeignKey(p => p.OwnerId);
+        //modelBuilder.Entity<Pet>()
+        //    .HasOne(p => p.PetOwner)
+        //    .WithMany(p => p.Pets)
+        //    .HasForeignKey(p => p.OwnerId);
 
         modelBuilder.Entity<Examination>()
             .HasOne(p => p.Pet)
@@ -53,17 +53,16 @@ public class PetnabizDatabaseContext : IdentityDbContext<AppUser, AppRole, int>
             .WithMany(p => p.Examinations)
             .HasForeignKey(p => p.VetId);
 
-        modelBuilder.Entity<Examination>()
-            .HasOne(p => p.PetOwner)
-            .WithMany(p => p.Examinations)
-            .HasForeignKey(p => p.PetOwnerId);
+        //modelBuilder.Entity<Examination>()
+        //    .HasOne(p => p.PetOwner)
+        //    .WithMany(p => p.Examinations)
+        //    .HasForeignKey(p => p.PetOwnerId);
 
         base.OnModelCreating(modelBuilder);
     }
 
     public DbSet<VeterinaryClinic> VeterinaryClinics { get; set; }
     public DbSet<Vet> Vets { get; set; }
-    public DbSet<PetOwner> PetOwners { get; set; }
     public DbSet<Pet> Pets { get; set; }
     public DbSet<Examination> Examinations { get; set; }
 

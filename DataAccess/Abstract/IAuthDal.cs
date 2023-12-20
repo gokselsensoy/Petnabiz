@@ -6,8 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccess.Abstract;
-
-public interface IPetOwnerDal : IEntityRepository<PetOwner>
+namespace DataAccess.Abstract
 {
+    public interface IAuthDal : IEntityRepository<AppUser>
+    {
+    }
 }

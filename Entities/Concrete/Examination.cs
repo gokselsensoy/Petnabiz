@@ -14,11 +14,11 @@ public class Examination : IEntity
     public string Description { get; set; }
 
     public int PetId { get; set; }
-    public int PetOwnerId { get; set; }
+    public int AppUserId { get; set; }
     public int VetId { get; set; }
 
     public Pet? Pet { get; set; } = null;
-    public PetOwner? PetOwner { get; set; } = null!;
+    public AppUser? Appuser { get; set; }  = null;
     public Vet? Vet { get; set; } = null!;
 
 }

@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -49,9 +50,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getbypetownerid")]
-        public IActionResult GetByOwnerId(int ownerId)
+        public IActionResult GetByUserId(int userId)
         {
-            var result = _examinationService.GetByOwnerId(ownerId);
+            var result = _examinationService.GetByUserId(userId);
             if (result.Success)
             {
                 return Ok(result);
@@ -59,7 +60,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("getbypetvetid")]
+        [HttpGet("getbyvetid")]
         public IActionResult GetByVetId(int vetId)
         {
             var result = _examinationService.GetByVetId(vetId);

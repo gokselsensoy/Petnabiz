@@ -20,5 +20,5 @@ public class VeterinaryClinic : IEntity
     //vergi no
 
     public ICollection<Vet> Vets { get; set; } = new List<Vet>();
-    public ICollection<PetOwner> PetOwners { get; set; } = new List<PetOwner>();
+    public ICollection<AppUser> AppUsers { get; set; } = new List<AppUser>();
 }

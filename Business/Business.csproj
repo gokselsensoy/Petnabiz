@@ -13,8 +13,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="BusinessAspect\" />
     <Folder Include="Constants\" />
+    <Folder Include="ValidationRules\AppRoleValidationRules\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.8.1" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
   </ItemGroup>
 
 </Project>

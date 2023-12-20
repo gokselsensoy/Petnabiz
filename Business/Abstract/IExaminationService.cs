@@ -13,7 +13,7 @@ public interface IExaminationService
     IDataResult<List<Examination>> GetAll();
     IDataResult<Examination> GetByExaminationId(int examinationId);
     IDataResult<List<Examination>> GetByPetId(int petId);
-    IDataResult<List<Examination>> GetByOwnerId(int ownerId);
+    IDataResult<List<Examination>> GetByUserId(int userId);
     IDataResult<List<Examination>> GetByVetId(int vetId);
     IDataResult<int> Add(Examination examination);
     IResult Update(Examination examination);

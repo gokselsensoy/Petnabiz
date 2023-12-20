@@ -1,8 +1,10 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspect;
 using Core.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +16,14 @@ namespace Business.Concrete;
 
 public class PetManager : IPetService
 {
+    private readonly UserManager<AppUser> _userManager;
     private readonly IPetDal _petDal;
 
-    public PetManager(IPetDal petDal)
+
+    public PetManager(IPetDal petDal, UserManager<AppUser> userManager)
     {
         _petDal = petDal;
+        _userManager = userManager;
     }
 
     public IDataResult<int> Add(Pet pet)
@@ -28,8 +33,7 @@ public class PetManager : IPetService
         p.Name == pet.Name &&
         p.Species == pet.Species &&
         p.Breed == pet.Breed &&
-        p.Gender == pet.Gender &&
-        p.OwnerId == pet.OwnerId);
+        p.Gender == pet.Gender);
         if (result != null)
         {
             return new SuccessDataResult<int>(result.Id /*msg*/);
@@ -56,9 +60,9 @@ public class PetManager : IPetService
 
     }
 
-    public IDataResult<List<Pet>> GetByOwnerId(int ownerId)
+    public IDataResult<List<Pet>> GetByUserId(int userId)
     {
-        return new SuccessDataResult<List<Pet>>(_petDal.GetAll(p => p.OwnerId == ownerId));
+        return new SuccessDataResult<List<Pet>>(_petDal.GetAll(p => p.AppUserId == userId));
     }
 
     public IDataResult<Pet> GetByPetId(int petId)

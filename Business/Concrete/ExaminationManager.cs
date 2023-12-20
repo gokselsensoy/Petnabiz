@@ -31,7 +31,7 @@ public class ExaminationManager : IExaminationService
         e.Description == examination.Description &&
         e.VetId == examination.VetId &&
         e.PetId == examination.PetId &&
-        e.PetOwnerId == examination.PetOwnerId);
+        e.AppUserId == examination.AppUserId);
         if (result !=null)
         {
             return new SuccessDataResult<int>(result.Id /*msg*/);
@@ -63,9 +63,9 @@ public class ExaminationManager : IExaminationService
 
     }
 
-    public IDataResult<List<Examination>> GetByOwnerId(int ownerId)
+    public IDataResult<List<Examination>> GetByUserId(int userId)
     {
-        return new SuccessDataResult<List<Examination>>(_examinationDal.GetAll(e => e.PetOwnerId == ownerId));
+        return new SuccessDataResult<List<Examination>>(_examinationDal.GetAll(e => e.AppUserId == userId));
 
     }
 

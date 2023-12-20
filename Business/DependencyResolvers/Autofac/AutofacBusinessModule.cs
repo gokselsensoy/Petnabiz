@@ -6,6 +6,8 @@ using Castle.DynamicProxy;
 using Core.Utilities.Interceptors;
 using DataAccess.Abstract;
 using DataAccess.Concrete;
+using Entities.Concrete;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,9 +25,6 @@ namespace Business.DependencyResolvers.Autofac
 
             builder.RegisterType<VetManager>().As<IVetService>();
             builder.RegisterType<EfVetDal>().As<IVetDal>();
-
-            builder.RegisterType<PetOwnerManager>().As<IPetOwnerService>();
-            builder.RegisterType<EfPetOwnerDal>().As<IPetOwnerDal>();
 
             builder.RegisterType<PetManager>().As<IPetService>();
             builder.RegisterType<EfPetDal>().As<IPetDal>();

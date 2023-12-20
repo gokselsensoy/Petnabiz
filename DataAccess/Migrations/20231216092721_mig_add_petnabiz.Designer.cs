@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(PetnabizDatabaseContext))]
-    [Migration("20231207060027_mig_add_petnabiz")]
+    [Migration("20231216092721_mig_add_petnabiz")]
     partial class mig_add_petnabiz
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -65,9 +65,15 @@ namespace DataAccess.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<int>("ClinicId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ConfirmCode")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -81,6 +87,10 @@ namespace DataAccess.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -102,6 +112,10 @@ namespace DataAccess.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("TCID")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -113,6 +127,9 @@ namespace DataAccess.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<int?>("VeterinaryClinicId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -122,6 +139,8 @@ namespace DataAccess.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("VeterinaryClinicId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -134,6 +153,9 @@ namespace DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("AppUserId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -144,17 +166,14 @@ namespace DataAccess.Migrations
                     b.Property<int>("PetId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PetOwnerId")
-                        .HasColumnType("int");
-
                     b.Property<int>("VetId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PetId");
+                    b.HasIndex("AppUserId");
 
-                    b.HasIndex("PetOwnerId");
+                    b.HasIndex("PetId");
 
                     b.HasIndex("VetId");
 
@@ -169,6 +188,9 @@ namespace DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("AppUserId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Breed")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -181,52 +203,15 @@ namespace DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OwnerId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Species")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("AppUserId");
 
                     b.ToTable("Pets");
-                });
-
-            modelBuilder.Entity("Entities.Concrete.PetOwner", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("ClinicId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClinicId");
-
-                    b.ToTable("PetOwners");
                 });
 
             modelBuilder.Entity("Entities.Concrete.Vet", b =>
@@ -399,17 +384,26 @@ namespace DataAccess.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Entities.Concrete.AppUser", b =>
+                {
+                    b.HasOne("Entities.Concrete.VeterinaryClinic", "VeterinaryClinic")
+                        .WithMany("AppUsers")
+                        .HasForeignKey("VeterinaryClinicId");
+
+                    b.Navigation("VeterinaryClinic");
+                });
+
             modelBuilder.Entity("Entities.Concrete.Examination", b =>
                 {
-                    b.HasOne("Entities.Concrete.Pet", "Pet")
+                    b.HasOne("Entities.Concrete.AppUser", "Appuser")
                         .WithMany("Examinations")
-                        .HasForeignKey("PetId")
+                        .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Entities.Concrete.PetOwner", "PetOwner")
+                    b.HasOne("Entities.Concrete.Pet", "Pet")
                         .WithMany("Examinations")
-                        .HasForeignKey("PetOwnerId")
+                        .HasForeignKey("PetId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -419,33 +413,22 @@ namespace DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Pet");
+                    b.Navigation("Appuser");
 
-                    b.Navigation("PetOwner");
+                    b.Navigation("Pet");
 
                     b.Navigation("Vet");
                 });
 
             modelBuilder.Entity("Entities.Concrete.Pet", b =>
                 {
-                    b.HasOne("Entities.Concrete.PetOwner", "PetOwner")
+                    b.HasOne("Entities.Concrete.AppUser", "Appuser")
                         .WithMany("Pets")
-                        .HasForeignKey("OwnerId")
+                        .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("PetOwner");
-                });
-
-            modelBuilder.Entity("Entities.Concrete.PetOwner", b =>
-                {
-                    b.HasOne("Entities.Concrete.VeterinaryClinic", "VeterinaryClinic")
-                        .WithMany("PetOwners")
-                        .HasForeignKey("ClinicId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("VeterinaryClinic");
+                    b.Navigation("Appuser");
                 });
 
             modelBuilder.Entity("Entities.Concrete.Vet", b =>
@@ -510,16 +493,16 @@ namespace DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Entities.Concrete.Pet", b =>
-                {
-                    b.Navigation("Examinations");
-                });
-
-            modelBuilder.Entity("Entities.Concrete.PetOwner", b =>
+            modelBuilder.Entity("Entities.Concrete.AppUser", b =>
                 {
                     b.Navigation("Examinations");
 
                     b.Navigation("Pets");
+                });
+
+            modelBuilder.Entity("Entities.Concrete.Pet", b =>
+                {
+                    b.Navigation("Examinations");
                 });
 
             modelBuilder.Entity("Entities.Concrete.Vet", b =>
@@ -529,7 +512,7 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("Entities.Concrete.VeterinaryClinic", b =>
                 {
-                    b.Navigation("PetOwners");
+                    b.Navigation("AppUsers");
 
                     b.Navigation("Vets");
                 });

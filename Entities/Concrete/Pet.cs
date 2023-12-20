@@ -15,10 +15,10 @@ public class Pet : IEntity
     public string Breed { get; set; }
     public string Gender { get; set; }
 
-    //passport no chip no
+    //passportno chipno
 
-    public int OwnerId { get; set; }
-    public PetOwner? PetOwner { get; set; } = null!;
+    public int AppUserId { get; set; }
+    public AppUser? Appuser { get; set; } = null;
 
     public ICollection<Examination> Examinations { get; set; } = new List<Examination>();
 }
