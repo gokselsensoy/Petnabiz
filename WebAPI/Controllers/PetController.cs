@@ -41,10 +41,13 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("getbypetuserid")]
-        public IActionResult GetByUserId(int userId)
+        [HttpGet("getbypetuser")]
+        public async Task<IActionResult> GetByUserId()
         {
-            var result = _petService.GetByUserId(userId);
+            var value = await _userManager.FindByNameAsync(User.Identity.Name); 
+            var result = _petService.GetByUserId(value.Id);
+          
+
             if (result.Success)
             {
                 return Ok(result);
@@ -53,9 +56,9 @@ namespace WebAPI.Controllers
         }
 
 
-        [Authorize(Roles = "Veteriner")]
+        [Authorize(Roles = "Üye")]
         [HttpPost("add")]
-        public async Task<IActionResult> Add([FromBody]Pet pet)
+        public async Task<IActionResult> Add(/*[FromBody]*/Pet pet)
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             pet.AppUserId = user.Id;
@@ -68,6 +71,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "Üye")]
         [HttpPost("delete")]
         public IActionResult Delete(Pet petService)
         {
@@ -79,6 +83,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "Üye, Veteriner")]
         [HttpPost("update")]
         public IActionResult Update(Pet petService)
         {

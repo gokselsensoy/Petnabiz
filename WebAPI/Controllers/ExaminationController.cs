@@ -1,7 +1,9 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace WebAPI.Controllers
 {
@@ -16,7 +18,6 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getall")]
-        //[Authorize()]
         public IActionResult GetAll()
         {
             var result = _examinationService.GetAll();
@@ -72,6 +73,7 @@ namespace WebAPI.Controllers
         }
 
 
+        //[Authorize(Roles = "Veteriner")]
         [HttpPost("add")]
         public IActionResult Add(Examination examinationService)
         {
@@ -83,6 +85,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        //[Authorize(Roles = "Veteriner")]
         [HttpPost("delete")]
         public IActionResult Delete(Examination examinationService)
         {
@@ -94,6 +97,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        //[Authorize(Roles = "Veteriner")]
         [HttpPost("update")]
         public IActionResult Update(Examination examinationService)
         {

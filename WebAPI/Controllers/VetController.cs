@@ -1,6 +1,8 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace WebAPI.Controllers
 {
@@ -48,7 +50,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-
+        //[Authorize(Roles = "Veteriner")]
         [HttpPost("add")]
         public IActionResult Add(Vet vetService)
         {
@@ -60,6 +62,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        //[Authorize(Roles = "Veteriner")]
         [HttpPost("delete")]
         public IActionResult Delete(Vet vetService)
         {
@@ -71,6 +74,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        //[Authorize(Roles = "Veteriner")]
         [HttpPost("update")]
         public IActionResult Update(Vet vetService)
         {

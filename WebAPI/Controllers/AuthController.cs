@@ -1,11 +1,24 @@
-﻿using Business.Concrete;
+﻿using Business.Abstract;
+using Business.Concrete;
+using Business.Utilities.JWT;
+using System.IdentityModel.Tokens.Jwt;
+using Core.Entities.Concrete;
+using Core.Utilities.Extensions;
 using Entities.Concrete;
 using Entities.DTOs.AppUserDtos;
 using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MimeKit;
+using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 using WebAPI.Models;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Newtonsoft.Json.Linq;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace WebAPI.Controllers
 {
@@ -13,26 +26,35 @@ namespace WebAPI.Controllers
     [ApiController]
     public class AuthController : Controller
     {
+
+        IUserService _userService;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
 
-        public AuthController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+        public AuthController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IUserService userService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _userService = userService;
         }
 
 
         [HttpGet("getuserinfo")]
         public async Task<ActionResult> GetUserInfos()
         {
-            var value = await _userManager.FindByNameAsync(User.Identity.Name);
+
             AppUserEditDto appUserEditDto = new AppUserEditDto();
+
+            //var value2 = await _userManager.FindByNameAsync(User.Identity.Name);
+            var value = await _userManager.GetUserAsync(HttpContext.User);
             appUserEditDto.Name = value.Name;
             appUserEditDto.Surname = value.Surname;
             appUserEditDto.PhoneNumber = value.PhoneNumber;
-            appUserEditDto.Email = value.Email;
+            appUserEditDto.Email = value.UserName;
             return Ok(appUserEditDto);
+
+            //var value2 = User.FindFirstValue(ClaimTypes.Name);
+            //var result2 = _userService.GetClaims(value);
         }
 
         [HttpPost("logout")]
@@ -42,12 +64,10 @@ namespace WebAPI.Controllers
             return Ok();
         }
 
-
         [HttpPost("selectclinic")]
         public async Task<IActionResult> SelectClinic(AppUserChangeClinicDto appUserChangeClinicDto)
-        {   
+        {
             var user = await _userManager.FindByEmailAsync(User.Identity.Name);
-
             user.ClinicId = appUserChangeClinicDto.ClinicId;
             var result = await _userManager.UpdateAsync(user);
             if (result.Succeeded)
@@ -56,6 +76,8 @@ namespace WebAPI.Controllers
             }
             return BadRequest();
         }
+
+
 
 
         [HttpPost("update")]
@@ -80,10 +102,33 @@ namespace WebAPI.Controllers
         [HttpPost("login")]
         public async Task<ActionResult> Login(AppUserLoginDto appUserLoginDto)
         {
-            var result = await _signInManager.PasswordSignInAsync(appUserLoginDto.Mail, appUserLoginDto.Password, false, false);
+            var result = await _signInManager.PasswordSignInAsync(appUserLoginDto.Email, appUserLoginDto.Password, false, false);
+
             if (result.Succeeded)
-            {
-                var user = await _userManager.FindByEmailAsync(appUserLoginDto.Mail);
+            {              
+                var user = await _userManager.FindByEmailAsync(appUserLoginDto.Email);
+
+                //var claims = new[]
+                //{
+                //    new Claim(ClaimTypes.Name, user.UserName),
+                //    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                //};
+
+                //var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your-secret-key"));
+                //var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+                //var token = new JwtSecurityToken(
+                //issuer: "your-issuer",
+                //audience: "your-audience",
+                //claims: claims,
+                //expires: DateTime.Now.AddMinutes(30),
+                //signingCredentials: creds
+                //);
+
+                ////var claimsIdentity = new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+                //var handler = new JwtSecurityTokenHandler();
+                //var jwt = handler.WriteToken(token);
+
                 if (user.EmailConfirmed == true)
                 {
                     return Ok(result);
@@ -162,14 +207,19 @@ namespace WebAPI.Controllers
         [HttpPost("confirmcode")]
         public async Task<IActionResult> Confirm(ConfirmMailModel confirmMailModel)
         {
-            var user = await _userManager.FindByEmailAsync(confirmMailModel.Mail);
+            var user = await _userManager.FindByEmailAsync(confirmMailModel.Email);
+            var result = _userService.CreateAccessToken(user);
             if (user.ConfirmCode == confirmMailModel.ConfirmCode)
             {
                 user.EmailConfirmed = true;
                 await _userManager.UpdateAsync(user);
-                return Ok(user);
+                return Ok(result);
             }
             return BadRequest(user);
         }
     }
+
+
+
+    //fluent validation, identityvalidator
 }

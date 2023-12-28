@@ -65,8 +65,6 @@ public class PetnabizDatabaseContext : IdentityDbContext<AppUser, AppRole, int>
     public DbSet<Vet> Vets { get; set; }
     public DbSet<Pet> Pets { get; set; }
     public DbSet<Examination> Examinations { get; set; }
-
-    //public DbSet<User> Users { get; set; }
-    //public DbSet<OperationClaim> OperationClaims { get; set; }
-    //public DbSet<UserOperationClaim> UserOperationClaims { get; set; }
+    public DbSet<OperationClaim> OperationClaims { get; set; }
+    public DbSet<UserOperationClaim> UserOperationClaims { get; set; }
 }
