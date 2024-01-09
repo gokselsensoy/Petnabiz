@@ -38,8 +38,8 @@ namespace Business.Concrete
         public IDataResult<AccessToken> CreateAccessToken(AppUser user)
         {
             var claims = GetClaims(user);
-            var accessToken = _tokenHelper.CreateToken(user, claims.Data);
-            return new SuccessDataResult<AccessToken>(accessToken);
+            var token = _tokenHelper.CreateToken(user, claims.Data);
+            return new SuccessDataResult<AccessToken>(token);
         }
 
         private IResult CheckIfUserIdExist(int userId)

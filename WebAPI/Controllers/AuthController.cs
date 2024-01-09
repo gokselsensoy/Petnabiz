@@ -19,6 +19,7 @@ using Newtonsoft.Json.Linq;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
+using Business.Utilities.Results;
 
 namespace WebAPI.Controllers
 {
@@ -36,25 +37,6 @@ namespace WebAPI.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
             _userService = userService;
-        }
-
-
-        [HttpGet("getuserinfo")]
-        public async Task<ActionResult> GetUserInfos()
-        {
-
-            AppUserEditDto appUserEditDto = new AppUserEditDto();
-
-            //var value2 = await _userManager.FindByNameAsync(User.Identity.Name);
-            var value = await _userManager.GetUserAsync(HttpContext.User);
-            appUserEditDto.Name = value.Name;
-            appUserEditDto.Surname = value.Surname;
-            appUserEditDto.PhoneNumber = value.PhoneNumber;
-            appUserEditDto.Email = value.UserName;
-            return Ok(appUserEditDto);
-
-            //var value2 = User.FindFirstValue(ClaimTypes.Name);
-            //var result2 = _userService.GetClaims(value);
         }
 
         [HttpPost("logout")]
@@ -85,10 +67,11 @@ namespace WebAPI.Controllers
         {
             if(appUserEditDto.Password == appUserEditDto.ConfirmPassword)
             {
-                var user = await _userManager.FindByNameAsync(User.Identity.Name);
+                var user = await _userManager.FindByNameAsync(User.Identity.Name);          
 
                 user.PhoneNumber = appUserEditDto.PhoneNumber;
-                user.Email = appUserEditDto.Email;
+                user.Email = appUserEditDto.UserName;
+                user.UserName = appUserEditDto.UserName;
                 user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, appUserEditDto.Password);
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
@@ -102,41 +85,35 @@ namespace WebAPI.Controllers
         [HttpPost("login")]
         public async Task<ActionResult> Login(AppUserLoginDto appUserLoginDto)
         {
-            var result = await _signInManager.PasswordSignInAsync(appUserLoginDto.Email, appUserLoginDto.Password, false, false);
+            var result = await _signInManager.PasswordSignInAsync(appUserLoginDto.UserName, appUserLoginDto.Password, false, false);
 
             if (result.Succeeded)
-            {              
-                var user = await _userManager.FindByEmailAsync(appUserLoginDto.Email);
+            {
+                var user = await _userManager.FindByNameAsync(appUserLoginDto.UserName);
+                var token = _userService.CreateAccessToken(user);
 
-                //var claims = new[]
-                //{
-                //    new Claim(ClaimTypes.Name, user.UserName),
-                //    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                //};
 
-                //var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your-secret-key"));
-                //var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-                //var token = new JwtSecurityToken(
-                //issuer: "your-issuer",
-                //audience: "your-audience",
-                //claims: claims,
-                //expires: DateTime.Now.AddMinutes(30),
-                //signingCredentials: creds
-                //);
-
-                ////var claimsIdentity = new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
-                //var handler = new JwtSecurityTokenHandler();
-                //var jwt = handler.WriteToken(token);
 
                 if (user.EmailConfirmed == true)
                 {
-                    return Ok(result);
+                    return Ok(token);
                     //email adresinizi doğrulayınız
                 }
             }
             //kullanıcı adı veya şifre hatalı
             return BadRequest(result);
+        }
+
+        [HttpGet("getuserinfo")]
+        public async Task<ActionResult> GetUserInfos()
+        {
+            AppUserInfoDto appUserInfoDto = new AppUserInfoDto();
+            var value = await _userManager.FindByNameAsync(User.Identity.Name);
+            var token = _userService.GetClaims(value);
+            appUserInfoDto.Name = value.Name;
+            appUserInfoDto.Surname = value.Surname;
+            appUserInfoDto.UserName = value.UserName;
+            return Ok(appUserInfoDto);
         }
 
 
