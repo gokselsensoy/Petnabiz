@@ -14,11 +14,16 @@ public class VeterinaryClinic : IEntity
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
     public string Address { get; set; }
-    public string City { get; set; }
-    public string District { get; set; }
+
+    public int CityId { get; set; }
+    public int DistrictId { get; set; }
+    public City? City { get; set; } = null!;
+    public District? District { get; set; } = null!;
 
     //vergi no
 
     public ICollection<Vet> Vets { get; set; } = new List<Vet>();
     public ICollection<AppUser> AppUsers { get; set; } = new List<AppUser>();
+    public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+    public ICollection<Examination> Examinations { get; set; } = new List<Examination>();
 }

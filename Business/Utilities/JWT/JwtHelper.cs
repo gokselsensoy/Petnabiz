@@ -61,6 +61,7 @@ namespace Business.Utilities.JWT
             claims.AddEmail(user.Email);
             claims.AddName($"{user.UserName}");      //{user.Surname}
             claims.AddRoles(operationClaims.Select(c => c.Name).ToArray());
+            claims.Add(new Claim("veterinaryClinicId", user.VeterinaryClinicId.ToString()));
 
             return claims;
         }

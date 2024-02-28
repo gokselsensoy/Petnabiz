@@ -4,6 +4,7 @@ using DataAccess.Concrete;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(PetnabizDatabaseContext))]
-    partial class PetnabizDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240206035516_mig-add-petnabiz")]
+    partial class migaddpetnabiz
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,13 +38,16 @@ namespace DataAccess.Migrations
                     b.Property<DateTime>("AppointmentDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("ClinicId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("EntryDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("PetId")
                         .HasColumnType("int");
 
-                    b.Property<int>("VeterinaryClinicId")
+                    b.Property<int?>("VeterinaryClinicId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -53,7 +58,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("VeterinaryClinicId");
 
-                    b.ToTable("Appointments", (string)null);
+                    b.ToTable("Appointments");
                 });
 
             modelBuilder.Entity("Entities.Concrete.AppRole", b =>
@@ -95,6 +100,9 @@ namespace DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ClinicId")
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -188,7 +196,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cities", (string)null);
+                    b.ToTable("Cities");
                 });
 
             modelBuilder.Entity("Entities.Concrete.District", b =>
@@ -210,7 +218,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("CityId");
 
-                    b.ToTable("Districts", (string)null);
+                    b.ToTable("Districts");
                 });
 
             modelBuilder.Entity("Entities.Concrete.Examination", b =>
@@ -255,7 +263,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("VeterinaryClinicId");
 
-                    b.ToTable("Examinations", (string)null);
+                    b.ToTable("Examinations");
                 });
 
             modelBuilder.Entity("Entities.Concrete.OperationClaim", b =>
@@ -272,7 +280,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OperationClaims", (string)null);
+                    b.ToTable("OperationClaims");
                 });
 
             modelBuilder.Entity("Entities.Concrete.Pet", b =>
@@ -306,7 +314,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("Pets", (string)null);
+                    b.ToTable("Pets");
                 });
 
             modelBuilder.Entity("Entities.Concrete.UserOperationClaim", b =>
@@ -325,7 +333,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserOperationClaims", (string)null);
+                    b.ToTable("UserOperationClaims");
                 });
 
             modelBuilder.Entity("Entities.Concrete.Vet", b =>
@@ -335,6 +343,9 @@ namespace DataAccess.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ClinicId")
+                        .HasColumnType("int");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -348,14 +359,14 @@ namespace DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("VeterinaryClinicId")
+                    b.Property<int?>("VeterinaryClinicId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("VeterinaryClinicId");
 
-                    b.ToTable("Vets", (string)null);
+                    b.ToTable("Vets");
                 });
 
             modelBuilder.Entity("Entities.Concrete.VeterinaryClinic", b =>
@@ -370,15 +381,17 @@ namespace DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CityId")
-                        .HasColumnType("int");
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ClinicName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("DistrictId")
-                        .HasColumnType("int");
+                    b.Property<string>("District")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -390,11 +403,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CityId");
-
-                    b.HasIndex("DistrictId");
-
-                    b.ToTable("VeterinaryClinics", (string)null);
+                    b.ToTable("VeterinaryClinics");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -516,9 +525,7 @@ namespace DataAccess.Migrations
 
                     b.HasOne("Entities.Concrete.VeterinaryClinic", "VeterinaryClinic")
                         .WithMany("Appointments")
-                        .HasForeignKey("VeterinaryClinicId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("VeterinaryClinicId");
 
                     b.Navigation("AppUser");
 
@@ -539,7 +546,7 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("Entities.Concrete.District", b =>
                 {
                     b.HasOne("Entities.Concrete.City", "City")
-                        .WithMany("Districts")
+                        .WithMany()
                         .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -601,30 +608,9 @@ namespace DataAccess.Migrations
                 {
                     b.HasOne("Entities.Concrete.VeterinaryClinic", "VeterinaryClinic")
                         .WithMany("Vets")
-                        .HasForeignKey("VeterinaryClinicId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("VeterinaryClinicId");
 
                     b.Navigation("VeterinaryClinic");
-                });
-
-            modelBuilder.Entity("Entities.Concrete.VeterinaryClinic", b =>
-                {
-                    b.HasOne("Entities.Concrete.City", "City")
-                        .WithMany("VeterinaryClinics")
-                        .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Entities.Concrete.District", "District")
-                        .WithMany("VeterinaryClinics")
-                        .HasForeignKey("DistrictId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("City");
-
-                    b.Navigation("District");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -690,18 +676,6 @@ namespace DataAccess.Migrations
                     b.Navigation("Examinations");
 
                     b.Navigation("Pets");
-                });
-
-            modelBuilder.Entity("Entities.Concrete.City", b =>
-                {
-                    b.Navigation("Districts");
-
-                    b.Navigation("VeterinaryClinics");
-                });
-
-            modelBuilder.Entity("Entities.Concrete.District", b =>
-                {
-                    b.Navigation("VeterinaryClinics");
                 });
 
             modelBuilder.Entity("Entities.Concrete.Pet", b =>

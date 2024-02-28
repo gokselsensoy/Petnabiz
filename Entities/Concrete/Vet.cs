@@ -16,7 +16,7 @@ public class Vet : IEntity
 
     //vet oda no
 
-    public int ClinicId { get; set; }
+    public int VeterinaryClinicId { get; set; }
     public VeterinaryClinic? VeterinaryClinic { get; set; } = null!;
 
     public ICollection<Examination> Examinations { get; set; } = new List<Examination>();

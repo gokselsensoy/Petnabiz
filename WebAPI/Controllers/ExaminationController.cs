@@ -28,6 +28,39 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [HttpGet("examinationdetail")]
+        public IActionResult GetExaminationDetail(int userId)
+        {
+            var result = _examinationService.GetExaminationDetails(userId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("petexaminationdetail")]
+        public IActionResult GetPetExaminationDetail(int petId)
+        {
+            var result = _examinationService.GetPetExaminationDetails(petId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("pastexaminationdetail")]
+        public IActionResult GetPastExaminationDetail(int clinicId)
+        {
+            var result = _examinationService.GetPastExaminationDetails(clinicId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
         [HttpGet("getbyexaminationid")]
         public IActionResult GetByExaminationId(int examinationId)
         {
@@ -50,10 +83,21 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("getbypetownerid")]
+        [HttpGet("getbyuserid")]
         public IActionResult GetByUserId(int userId)
         {
             var result = _examinationService.GetByUserId(userId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("getbyclinicid")]
+        public IActionResult GetByClinicId(int clinicId)
+        {
+            var result = _examinationService.GetByClinicId(clinicId);
             if (result.Success)
             {
                 return Ok(result);
@@ -75,9 +119,9 @@ namespace WebAPI.Controllers
 
         //[Authorize(Roles = "Veteriner")]
         [HttpPost("add")]
-        public IActionResult Add(Examination examinationService)
+        public IActionResult Add(Examination examination)
         {
-            var result = _examinationService.Add(examinationService);
+            var result = _examinationService.Add(examination);
             if (result.Success)
             {
                 return Ok(result);
@@ -87,9 +131,9 @@ namespace WebAPI.Controllers
 
         //[Authorize(Roles = "Veteriner")]
         [HttpPost("delete")]
-        public IActionResult Delete(Examination examinationService)
+        public IActionResult Delete(Examination examination)
         {
-            var result = _examinationService.Delete(examinationService);
+            var result = _examinationService.Delete(examination);
             if (result.Success)
             {
                 return Ok(result);
@@ -99,9 +143,9 @@ namespace WebAPI.Controllers
 
         //[Authorize(Roles = "Veteriner")]
         [HttpPost("update")]
-        public IActionResult Update(Examination examinationService)
+        public IActionResult Update(Examination examination)
         {
-            var result = _examinationService.Update(examinationService);
+            var result = _examinationService.Update(examination);
             if (result.Success)
             {
                 return Ok(result);

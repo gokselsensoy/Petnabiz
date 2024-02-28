@@ -3,6 +3,7 @@ using Entities.Concrete;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI.Controllers
 {
@@ -41,11 +42,11 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("getbypetuser")]
-        public async Task<IActionResult> GetByUserId()
+        [HttpGet("getbyuserid")]
+        public async Task<IActionResult> GetByUserId(int userId)
         {
-            var value = await _userManager.FindByNameAsync(User.Identity.Name); 
-            var result = _petService.GetByUserId(value.Id);
+            //var value = await _userManager.FindByNameAsync(User.Identity.Name); 
+            var result = _petService.GetByUserId(userId);
           
 
             if (result.Success)
@@ -56,11 +57,10 @@ namespace WebAPI.Controllers
         }
 
 
-        [Authorize(Roles = "Üye")]
         [HttpPost("add")]
-        public async Task<IActionResult> Add(/*[FromBody]*/Pet pet)
+        public async Task<IActionResult> Add(Pet pet)
         {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            var user = await _userManager.FindByIdAsync(Convert.ToString(pet.AppUserId));
             pet.AppUserId = user.Id;
 
             var result = _petService.Add(pet);
@@ -71,11 +71,10 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [Authorize(Roles = "Üye")]
         [HttpPost("delete")]
-        public IActionResult Delete(Pet petService)
+        public IActionResult Delete(Pet pet)
         {
-            var result = _petService.Delete(petService);
+            var result = _petService.Delete(pet);
             if (result.Success)
             {
                 return Ok(result);
@@ -83,11 +82,10 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [Authorize(Roles = "Üye, Veteriner")]
         [HttpPost("update")]
-        public IActionResult Update(Pet petService)
+        public IActionResult Update(Pet pet)
         {
-            var result = _petService.Update(petService);
+            var result = _petService.Update(pet);
             if (result.Success)
             {
                 return Ok(result);

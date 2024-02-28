@@ -1,6 +1,5 @@
 ﻿using Core.Utilities.Results;
 using Entities.Concrete;
-using Entities.DTOs.AppUserDtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +8,11 @@ using System.Threading.Tasks;
 
 namespace Business.Abstract
 {
-    public interface IAuthService
+    public interface ICityService
     {
-        Task<IDataResult<int>> Add(AppUserRegisterDto appUserRegisterDto);
+        IDataResult<List<City>> GetAll();
+        IDataResult<City> GetById(int cityId);
+        IDataResult<int> Add(City city);
+        IResult Delete(City city);
     }
 }

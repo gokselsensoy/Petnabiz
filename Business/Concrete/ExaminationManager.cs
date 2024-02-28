@@ -5,6 +5,7 @@ using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete;
 using Entities.Concrete;
+using Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +32,8 @@ public class ExaminationManager : IExaminationService
         e.Description == examination.Description &&
         e.VetId == examination.VetId &&
         e.PetId == examination.PetId &&
+        e.AppointmentId == examination.AppointmentId &&
+        e.VeterinaryClinicId == examination.VeterinaryClinicId &&
         e.AppUserId == examination.AppUserId);
         if (result !=null)
         {
@@ -57,6 +60,19 @@ public class ExaminationManager : IExaminationService
         return new SuccessDataResult<List<Examination>>(_examinationDal.GetAll());
     }
 
+    public IDataResult<List<ExaminationDetailDto>> GetExaminationDetails(int userId)
+    {
+        return new SuccessDataResult<List<ExaminationDetailDto>>(_examinationDal.GetExaminationDetails(userId));
+    }
+    public IDataResult<List<PetExaminationDetailDto>> GetPetExaminationDetails(int petId)
+    {
+        return new SuccessDataResult<List<PetExaminationDetailDto>>(_examinationDal.GetPetExaminationDetails(petId));
+    }
+    public IDataResult<List<PastExaminationDetailDto>> GetPastExaminationDetails(int clinicId)
+    {
+        return new SuccessDataResult<List<PastExaminationDetailDto>>(_examinationDal.GetPastExaminationDetails(clinicId));
+    }
+
     public IDataResult<Examination> GetByExaminationId(int examinationId)
     {
         return new SuccessDataResult<Examination>(_examinationDal.Get(e => e.Id == examinationId));
@@ -66,6 +82,12 @@ public class ExaminationManager : IExaminationService
     public IDataResult<List<Examination>> GetByUserId(int userId)
     {
         return new SuccessDataResult<List<Examination>>(_examinationDal.GetAll(e => e.AppUserId == userId));
+
+    }
+
+    public IDataResult<List<Examination>> GetByClinicId(int clinicId)
+    {
+        return new SuccessDataResult<List<Examination>>(_examinationDal.GetAll(e => e.VeterinaryClinicId == clinicId));
 
     }
 

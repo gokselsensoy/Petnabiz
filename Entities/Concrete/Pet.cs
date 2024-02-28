@@ -21,4 +21,5 @@ public class Pet : IEntity
     public AppUser? Appuser { get; set; } = null;
 
     public ICollection<Examination> Examinations { get; set; } = new List<Examination>();
+    public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 }

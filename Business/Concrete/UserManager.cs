@@ -4,7 +4,9 @@ using Core.Business;
 using Core.Entities.Concrete;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
+using DataAccess.Concrete;
 using Entities.Concrete;
+using Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,6 +52,26 @@ namespace Business.Concrete
                 return new ErrorResult();
             }
             return new SuccessResult();
+        }
+
+        public IDataResult<List<AppUser>> GetByClinicId(int clinicId)
+        {
+            var result = _userDal.GetAll(p =>
+            p.VeterinaryClinicId == clinicId);
+            {
+                return new SuccessDataResult<List<AppUser>>(result);
+            }
+            return new ErrorDataResult<List<AppUser>>();
+        }
+
+        public IDataResult<AppUser> GetByUserId(int userId)
+        {
+            var result = _userDal.Get(p =>
+            p.Id == userId);
+            {
+                return new SuccessDataResult<AppUser>(result);
+            }
+            return new ErrorDataResult<AppUser>();
         }
     }
 }

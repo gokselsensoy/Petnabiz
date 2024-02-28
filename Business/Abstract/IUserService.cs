@@ -13,5 +13,7 @@ namespace Business.Abstract
     {
         IDataResult<List<OperationClaim>> GetClaims(AppUser user);
         IDataResult<AccessToken> CreateAccessToken(AppUser user);
+        IDataResult<List<AppUser>> GetByClinicId(int clinicId);
+        IDataResult<AppUser> GetByUserId(int userId);
     }
 }

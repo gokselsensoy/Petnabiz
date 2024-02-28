@@ -3,6 +3,7 @@ using Core.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,8 +29,8 @@ public class VeterinaryClinicManager : IVeterinaryClinicService
         v.Email == veterinaryClinic.Email &&
         v.PhoneNumber == veterinaryClinic.PhoneNumber &&
         v.Address == veterinaryClinic.Address &&
-        v.City == veterinaryClinic.City &&
-        v.District == veterinaryClinic.District);
+        v.CityId == veterinaryClinic.CityId &&
+        v.DistrictId == veterinaryClinic.DistrictId);
 
         if (result != null)
         {
@@ -55,15 +56,23 @@ public class VeterinaryClinicManager : IVeterinaryClinicService
     {
         return new SuccessDataResult<List<VeterinaryClinic>>(_veterinaryClinicDal.GetAll());
     }
+    public IDataResult<ClinicDetailDto> GetClinicDetails(int clinicId)
+    {
+        return new SuccessDataResult<ClinicDetailDto>(_veterinaryClinicDal.GetClinicDetails(clinicId));
+    }
 
     public IDataResult<VeterinaryClinic> GetByClinicId(int clinicId)
     {
         return new SuccessDataResult<VeterinaryClinic>(_veterinaryClinicDal.Get(v => v.Id == clinicId));
     }
 
-    public IDataResult<List<VeterinaryClinic>> GetByCity(string city)
+    public IDataResult<List<VeterinaryClinic>> GetByCityId(int cityId)
     {
-        return new SuccessDataResult<List<VeterinaryClinic>>(_veterinaryClinicDal.GetAll(v => v.City == city));
+        return new SuccessDataResult<List<VeterinaryClinic>>(_veterinaryClinicDal.GetAll(v => v.CityId == cityId));
+    }
+    public IDataResult<List<VeterinaryClinic>> GetByDistrictId(int districtId)
+    {
+        return new SuccessDataResult<List<VeterinaryClinic>>(_veterinaryClinicDal.GetAll(v => v.DistrictId == districtId));
     }
 
     public IResult Update(VeterinaryClinic veterinaryClinic)

@@ -33,6 +33,15 @@ namespace Business.DependencyResolvers.Autofac
             builder.RegisterType<ExaminationManager>().As<IExaminationService>();
             builder.RegisterType<EfExaminationDal>().As<IExaminationDal>();
 
+            builder.RegisterType<AppointmentManager>().As<IAppointmentService>();
+            builder.RegisterType<EfAppointmentDal>().As<IAppointmentDal>();
+
+            builder.RegisterType<CityManager>().As<ICityService>();
+            builder.RegisterType<EfCityDal>().As<ICityDal>();
+
+            builder.RegisterType<DistrictManager>().As<IDistrictService>();
+            builder.RegisterType<EfDistrictDal>().As<IDistrictDal>();
+
             builder.RegisterType<UserManager>().As<IUserService>();
             builder.RegisterType<EfUserDal>().As<IUserDal>();
 

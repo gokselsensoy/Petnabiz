@@ -25,7 +25,7 @@ namespace WebAPI.Controllers
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             user.UserName = user.Email;
-            var result = _veterinaryClinicService.GetByClinicId(user.ClinicId);
+            var result = _veterinaryClinicService.GetByClinicId(user.Id);
             AppUserClinicDto appUserClinicDto = new AppUserClinicDto();
             appUserClinicDto.ClinicName = result.Data.ClinicName;
             if (result.Success)
@@ -35,8 +35,18 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [HttpGet("clinicdetail")]
+        public IActionResult GetClinicDetail(int clinicId)
+        {
+            var result = _veterinaryClinicService.GetClinicDetails(clinicId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
         [HttpGet("getall")]
-        //[Authorize()]
         public IActionResult GetAll()
         {
             var result = _veterinaryClinicService.GetAll();
@@ -58,10 +68,21 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("getbycity")]
-        public IActionResult GetByCity(string city)
+        [HttpGet("getbycityid")]
+        public IActionResult GetByCityId(int cityId)
         {
-            var result = _veterinaryClinicService.GetByCity(city);
+            var result = _veterinaryClinicService.GetByCityId(cityId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("getbydistrictid")]
+        public IActionResult GetByDistrictId(int districtId)
+        {
+            var result = _veterinaryClinicService.GetByDistrictId(districtId);
             if (result.Success)
             {
                 return Ok(result);
@@ -70,11 +91,11 @@ namespace WebAPI.Controllers
         }
 
 
-        [Authorize(Roles = "Yönetici")]
+        //[Authorize(Roles = "Yönetici")]
         [HttpPost("add")]
-        public IActionResult Add(VeterinaryClinic veterinaryClinicService)
+        public IActionResult Add(VeterinaryClinic veterinaryClinic)
         {
-            var result = _veterinaryClinicService.Add(veterinaryClinicService);
+            var result = _veterinaryClinicService.Add(veterinaryClinic);
             if (result.Success)
             {
                 return Ok(result);
@@ -82,11 +103,11 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [Authorize(Roles = "Yönetici")]
+        //[Authorize(Roles = "Yönetici")]
         [HttpPost("delete")]
-        public IActionResult Delete(VeterinaryClinic veterinaryClinicService)
+        public IActionResult Delete(VeterinaryClinic veterinaryClinic)
         {
-            var result = _veterinaryClinicService.Delete(veterinaryClinicService);
+            var result = _veterinaryClinicService.Delete(veterinaryClinic);
             if (result.Success)
             {
                 return Ok(result);
@@ -94,11 +115,11 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [Authorize(Roles = "Yönetici")]
+        //[Authorize(Roles = "Yönetici")]
         [HttpPost("update")]
-        public IActionResult Update(VeterinaryClinic veterinaryClinicService)
+        public IActionResult Update(VeterinaryClinic veterinaryClinic)
         {
-            var result = _veterinaryClinicService.Update(veterinaryClinicService);
+            var result = _veterinaryClinicService.Update(veterinaryClinic);
             if (result.Success)
             {
                 return Ok(result);

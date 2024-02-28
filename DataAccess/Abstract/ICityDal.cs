@@ -1,4 +1,4 @@
-﻿using Core.DataAccess.EntityFramework;
+﻿using Core.DataAccess;
 using Entities.Concrete;
 using System;
 using System.Collections.Generic;
@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccess.Concrete
+namespace DataAccess.Abstract
 {
-    public class EfAuthDal : EfEntityRepositoryBase<AppUser, PetnabizDatabaseContext>
+    public interface ICityDal : IEntityRepository<City>
     {
     }
 }

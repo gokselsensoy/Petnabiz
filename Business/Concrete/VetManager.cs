@@ -27,7 +27,7 @@ public class VetManager : IVetService
         v.FirstName == vet.FirstName &&
         v.LastName == vet.LastName &&
         v.Gender == vet.Gender &&
-        v.ClinicId == vet.ClinicId);
+        v.VeterinaryClinicId == vet.VeterinaryClinicId);
 
         if (result !=null)
         {
@@ -62,7 +62,7 @@ public class VetManager : IVetService
 
     public IDataResult<List<Vet>> GetByClinicId(int clinicId)
     {
-        return new SuccessDataResult<List<Vet>>(_vetDal.GetAll(v => v.ClinicId == clinicId));
+        return new SuccessDataResult<List<Vet>>(_vetDal.GetAll(v => v.VeterinaryClinicId == clinicId));
     }
 
     public IResult Update(Vet vet)

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DataAccess.Migrations
 {
-    public partial class mig_add_petnabiz : Migration
+    public partial class migaddpetnabiz : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -22,6 +22,46 @@ namespace DataAccess.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Cities",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cities", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OperationClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OperationClaims", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserOperationClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AppUserId = table.Column<int>(type: "int", nullable: false),
+                    OperationClaimId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserOperationClaims", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -61,6 +101,26 @@ namespace DataAccess.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Districts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CityId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Districts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Districts_Cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "Cities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -109,17 +169,17 @@ namespace DataAccess.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ClinicId = table.Column<int>(type: "int", nullable: false)
+                    ClinicId = table.Column<int>(type: "int", nullable: false),
+                    VeterinaryClinicId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Vets", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Vets_VeterinaryClinics_ClinicId",
-                        column: x => x.ClinicId,
+                        name: "FK_Vets_VeterinaryClinics_VeterinaryClinicId",
+                        column: x => x.VeterinaryClinicId,
                         principalTable: "VeterinaryClinics",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -227,7 +287,42 @@ namespace DataAccess.Migrations
                         column: x => x.AppUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Appointments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EntryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    AppointmentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    AppUserId = table.Column<int>(type: "int", nullable: false),
+                    PetId = table.Column<int>(type: "int", nullable: false),
+                    ClinicId = table.Column<int>(type: "int", nullable: false),
+                    VeterinaryClinicId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Appointments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Appointments_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_Appointments_Pets_PetId",
+                        column: x => x.PetId,
+                        principalTable: "Pets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_Appointments_VeterinaryClinics_VeterinaryClinicId",
+                        column: x => x.VeterinaryClinicId,
+                        principalTable: "VeterinaryClinics",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -238,13 +333,21 @@ namespace DataAccess.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ExaminationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AppointmentId = table.Column<int>(type: "int", nullable: false),
                     PetId = table.Column<int>(type: "int", nullable: false),
                     AppUserId = table.Column<int>(type: "int", nullable: false),
-                    VetId = table.Column<int>(type: "int", nullable: false)
+                    VetId = table.Column<int>(type: "int", nullable: false),
+                    VeterinaryClinicId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Examinations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Examinations_Appointments_AppointmentId",
+                        column: x => x.AppointmentId,
+                        principalTable: "Appointments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_Examinations_AspNetUsers_AppUserId",
                         column: x => x.AppUserId,
@@ -258,12 +361,32 @@ namespace DataAccess.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
+                        name: "FK_Examinations_VeterinaryClinics_VeterinaryClinicId",
+                        column: x => x.VeterinaryClinicId,
+                        principalTable: "VeterinaryClinics",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_Examinations_Vets_VetId",
                         column: x => x.VetId,
                         principalTable: "Vets",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.NoAction);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Appointments_AppUserId",
+                table: "Appointments",
+                column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Appointments_PetId",
+                table: "Appointments",
+                column: "PetId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Appointments_VeterinaryClinicId",
+                table: "Appointments",
+                column: "VeterinaryClinicId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -310,6 +433,16 @@ namespace DataAccess.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Districts_CityId",
+                table: "Districts",
+                column: "CityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Examinations_AppointmentId",
+                table: "Examinations",
+                column: "AppointmentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Examinations_AppUserId",
                 table: "Examinations",
                 column: "AppUserId");
@@ -318,6 +451,11 @@ namespace DataAccess.Migrations
                 name: "IX_Examinations_PetId",
                 table: "Examinations",
                 column: "PetId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Examinations_VeterinaryClinicId",
+                table: "Examinations",
+                column: "VeterinaryClinicId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Examinations_VetId",
@@ -330,9 +468,9 @@ namespace DataAccess.Migrations
                 column: "AppUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Vets_ClinicId",
+                name: "IX_Vets_VeterinaryClinicId",
                 table: "Vets",
-                column: "ClinicId");
+                column: "VeterinaryClinicId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -353,16 +491,31 @@ namespace DataAccess.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Districts");
+
+            migrationBuilder.DropTable(
                 name: "Examinations");
+
+            migrationBuilder.DropTable(
+                name: "OperationClaims");
+
+            migrationBuilder.DropTable(
+                name: "UserOperationClaims");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Pets");
+                name: "Cities");
+
+            migrationBuilder.DropTable(
+                name: "Appointments");
 
             migrationBuilder.DropTable(
                 name: "Vets");
+
+            migrationBuilder.DropTable(
+                name: "Pets");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

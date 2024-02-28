@@ -5,11 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entities.DTOs.AppUserDtos
+namespace Entities.DTOs
 {
-    public class AppUserChangeClinicDto : IDto
+    public class ClinicPatientDto : IDto
     {
+        public string TCID { get; set; }
+        public string Name { get; set; }
+        public string Surname { get; set; }
         public string UserName { get; set; }
-        public int ClinicId { get; set; }
     }
 }

@@ -52,9 +52,9 @@ namespace WebAPI.Controllers
 
         //[Authorize(Roles = "Veteriner")]
         [HttpPost("add")]
-        public IActionResult Add(Vet vetService)
+        public IActionResult Add(Vet vet)
         {
-            var result = _vetService.Add(vetService);
+            var result = _vetService.Add(vet);
             if (result.Success)
             {
                 return Ok(result);
@@ -64,9 +64,9 @@ namespace WebAPI.Controllers
 
         //[Authorize(Roles = "Veteriner")]
         [HttpPost("delete")]
-        public IActionResult Delete(Vet vetService)
+        public IActionResult Delete(Vet vet)
         {
-            var result = _vetService.Delete(vetService);
+            var result = _vetService.Delete(vet);
             if (result.Success)
             {
                 return Ok(result);
@@ -76,9 +76,9 @@ namespace WebAPI.Controllers
 
         //[Authorize(Roles = "Veteriner")]
         [HttpPost("update")]
-        public IActionResult Update(Vet vetService)
+        public IActionResult Update(Vet vet)
         {
-            var result = _vetService.Update(vetService);
+            var result = _vetService.Update(vet);
             if (result.Success)
             {
                 return Ok(result);

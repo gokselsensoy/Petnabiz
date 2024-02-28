@@ -16,8 +16,9 @@ namespace Entities.Concrete
         public int ConfirmCode { get; set; }
         public List<Pet> Pets { get; set; } = new List<Pet>();
         public List<Examination> Examinations { get; set; } = new List<Examination>();
+        public List<Appointment> Appointments { get; set; } = new List<Appointment>();
 
-        public int ClinicId { get; set; }
+        public int? VeterinaryClinicId { get; set; }
         public VeterinaryClinic? VeterinaryClinic { get; set; } = null!;
 
     }

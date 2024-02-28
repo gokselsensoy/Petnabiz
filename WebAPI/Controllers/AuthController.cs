@@ -20,6 +20,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 using Business.Utilities.Results;
+using Core.Utilities.Results;
+using Entities.DTOs;
 
 namespace WebAPI.Controllers
 {
@@ -39,39 +41,50 @@ namespace WebAPI.Controllers
             _userService = userService;
         }
 
-        [HttpPost("logout")]
-        public async Task<IActionResult> Logout()
+        [HttpGet("getbyclinicid")]
+        public IActionResult GetByClinicId(int clinicId)
         {
-            await _signInManager.SignOutAsync();
-            return Ok();
+            var result = _userService.GetByClinicId(clinicId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("getbyuserid")]
+        public IActionResult GetByUserId(int userId)
+        {
+            var result = _userService.GetByUserId(userId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
         }
 
         [HttpPost("selectclinic")]
         public async Task<IActionResult> SelectClinic(AppUserChangeClinicDto appUserChangeClinicDto)
         {
-            var user = await _userManager.FindByEmailAsync(User.Identity.Name);
-            user.ClinicId = appUserChangeClinicDto.ClinicId;
+            var user = await _userManager.FindByNameAsync(appUserChangeClinicDto.UserName);
+            user.VeterinaryClinicId = appUserChangeClinicDto.ClinicId;
             var result = await _userManager.UpdateAsync(user);
             if (result.Succeeded)
-            {
-                return Ok(result);
+            {               return Ok(result);
             }
             return BadRequest();
         }
-
-
-
 
         [HttpPost("update")]
         public async Task<IActionResult> Update(AppUserEditDto appUserEditDto)
         {
             if(appUserEditDto.Password == appUserEditDto.ConfirmPassword)
             {
-                var user = await _userManager.FindByNameAsync(User.Identity.Name);          
+                var user = await _userManager.FindByNameAsync(appUserEditDto.UserName);          
 
                 user.PhoneNumber = appUserEditDto.PhoneNumber;
-                user.Email = appUserEditDto.UserName;
-                user.UserName = appUserEditDto.UserName;
+                user.Email = appUserEditDto.Email;
+                user.UserName = appUserEditDto.Email;
                 user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, appUserEditDto.Password);
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
@@ -81,6 +94,19 @@ namespace WebAPI.Controllers
             }
             return BadRequest();
         }
+
+        [HttpGet("getuserinfo")]
+        public async Task<ActionResult> GetUserInfos()
+        {
+            AppUserInfoDto appUserInfoDto = new AppUserInfoDto();
+            var value = await _userManager.FindByNameAsync(User.Identity.Name);
+            appUserInfoDto.Name = value.Name;
+            appUserInfoDto.Surname = value.Surname;
+            appUserInfoDto.UserName = value.UserName;
+            return Ok(appUserInfoDto);
+        }
+
+        //----  Auth Operations  ----
 
         [HttpPost("login")]
         public async Task<ActionResult> Login(AppUserLoginDto appUserLoginDto)
@@ -104,19 +130,12 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("getuserinfo")]
-        public async Task<ActionResult> GetUserInfos()
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
         {
-            AppUserInfoDto appUserInfoDto = new AppUserInfoDto();
-            var value = await _userManager.FindByNameAsync(User.Identity.Name);
-            var token = _userService.GetClaims(value);
-            appUserInfoDto.Name = value.Name;
-            appUserInfoDto.Surname = value.Surname;
-            appUserInfoDto.UserName = value.UserName;
-            return Ok(appUserInfoDto);
+            await _signInManager.SignOutAsync();
+            return Ok();
         }
-
-
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(AppUserRegisterDto appUserRegisterDto)
