@@ -20,7 +20,7 @@ public class PetnabizDatabaseContext : IdentityDbContext<AppUser, AppRole, int>
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=PetnabizDatabase;Trusted_Connection=true");
+        optionsBuilder.UseSqlServer(@"Data Source=petnabizdb;Initial Catalog=PetnabizDatabase;User ID=sa;Password=password@w3ypet");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

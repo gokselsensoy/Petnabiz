@@ -1,10 +1,25 @@
 services:
-    api:
+    petnabizdb:
+        container_name: petnabiz-db
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        ports:
+            - 8002:1433
+        environment:
+            - ACCEPT_EULA=Y
+            - SA_PASSWORD=password@w3ypet
+    petnabizapi:
+        container_name: petnabiz-backend
         build:
             context: .
             dockerfile: Dockerfile
         ports:
-            - 80:80
+            - 8001:80
+        depends_on:
+            - petnabizdb
+        environment:
+            - DB_HOST=petnabizdb
+            - DB_NAME=PetnabizDatabase
+            - DB_SA_PASSWORD=password@w3ypet
         restart: always
         volumes:
             - ./server:/app

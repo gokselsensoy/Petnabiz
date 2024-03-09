@@ -8,14 +8,13 @@ COPY ["DataAccess/DataAccess.csproj", "DataAccess/"]
 COPY ["Entities/Entities.csproj", "Entities/"]
 RUN dotnet restore "WebAPI/WebAPI.csproj"
 COPY . .
-WORKDIR "/app/WebAPI"
-RUN dotnet build "WebAPI.csproj" -c Release -o /app/build
 FROM build-env AS publish
 RUN dotnet publish -c Release --property:PublishDir=/out
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 
 WORKDIR /app
+EXPOSE 80
 COPY --from=publish /out .
 
 ENTRYPOINT ["dotnet", "WebAPI.dll"]
