@@ -2,7 +2,7 @@ name: Publish Backend
 on:
   push:
     branches:
-      -prod
+      - prod
 jobs:
   release:
     concurrency:
