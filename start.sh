@@ -1,1 +1,1 @@
-docker-compose up --force-recreate --build -d petnabizapi
+docker compose up --force-recreate --build -d petnabizapi
