@@ -19,7 +19,7 @@ namespace WebAPI.Controllers
             _userManager = userManager;
         }
 
-        [HttpGet("degisiklik")]
+        [HttpGet("getir")]
         //[Authorize()]
         public IActionResult GetAll()
         {
