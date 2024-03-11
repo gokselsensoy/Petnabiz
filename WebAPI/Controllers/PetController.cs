@@ -19,7 +19,7 @@ namespace WebAPI.Controllers
             _userManager = userManager;
         }
 
-        [HttpGet("asd")]
+        [HttpGet("getall")]
         //[Authorize()]
         public IActionResult GetAll()
         {
