@@ -13,7 +13,7 @@ services:
             context: .
             dockerfile: Dockerfile
         ports:
-            - 8001:80
+            - 1000:1000
         depends_on:
             - petnabizdb
         environment:
