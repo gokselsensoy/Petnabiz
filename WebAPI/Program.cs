@@ -58,7 +58,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddDependencyResolvers(new ICoreModule[] { new CoreModule() });
 
-
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(builder => builder.RegisterModule(new AutofacBusinessModule()));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -104,5 +103,7 @@ app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
 });
+
+app.Urls.Add("http://*:1000");
 
 app.Run();
