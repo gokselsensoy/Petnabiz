@@ -14,6 +14,8 @@ public class CityController : ControllerBase
         _cityService = cityService;
     }
 
+    //deneme
+
     [HttpGet("getall")]
     public IActionResult GetAll()
     {
