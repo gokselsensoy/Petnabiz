@@ -9,6 +9,7 @@ services:
             - SA_PASSWORD=password@w3ypet
     petnabizapi:
         container_name: petnabiz-backend
+        image: petnabizapi
         build:
             context: .
             dockerfile: Dockerfile
