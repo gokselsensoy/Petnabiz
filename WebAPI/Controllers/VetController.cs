@@ -16,7 +16,7 @@ namespace WebAPI.Controllers
             _vetService = vetService;
         }
 
-        [HttpGet("getall")]
+        [HttpGet("getir")]
         //[Authorize()]
         public IActionResult GetAll()
         {
